@@ -1,0 +1,737 @@
+{
+  "version": "1.0.0",
+  "reviewed_on": "2026-09-28",
+  "controls": [
+    {
+      "id": "G01",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Name the accountable owner",
+      "requirement": "Assign a business owner and a technical owner for each AI workflow, including experiments that access company data.",
+      "verification": "Select a running workflow and confirm who can stop it and who accepts its residual risk.",
+      "evidence": "Approved ownership record and escalation contact.",
+      "suggested_owner": "Business owner"
+    },
+    {
+      "id": "G02",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Inventory the complete workflow",
+      "requirement": "Record models, gateways, tools, plugins, MCP servers, storage, dependencies, identities, data sources and execution locations.",
+      "verification": "Trace one real request from user input to output and every external action; compare it with the inventory.",
+      "evidence": "Dated inventory and data-flow diagram.",
+      "suggested_owner": "Technical owner"
+    },
+    {
+      "id": "G03",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Classify data before connecting it",
+      "requirement": "Define which data classes may enter each model, connector, index, browser session and log destination.",
+      "verification": "Use synthetic examples of allowed and prohibited data and verify the documented handling decision.",
+      "evidence": "Data classification matrix and approved use cases.",
+      "suggested_owner": "Data owner"
+    },
+    {
+      "id": "G04",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Document trust boundaries",
+      "requirement": "Identify where untrusted content, executable code or a different user or tenant crosses into a more privileged component.",
+      "verification": "Walk through a malicious document, compromised package and stolen token; identify the enforced boundary for each.",
+      "evidence": "Threat model with controls and unresolved risks.",
+      "suggested_owner": "Security lead"
+    },
+    {
+      "id": "G05",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Make approved AI easy to use",
+      "requirement": "Maintain approved tools and a clear process for requesting new tools, reporting accidental uploads and retiring unused integrations.",
+      "verification": "Ask a team member to find the policy and report a synthetic accidental upload without using a public channel.",
+      "evidence": "Approved-tools list, onboarding record and reporting procedure.",
+      "suggested_owner": "IT owner"
+    },
+    {
+      "id": "G06",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Reassess meaningful changes",
+      "requirement": "Require review when adding a data source, tool, model, privilege, network route or execution backend; give exceptions an expiry.",
+      "verification": "Review the last material change and confirm its tests and risk acceptance; find any expired exceptions.",
+      "evidence": "Change record and dated exception register.",
+      "suggested_owner": "Technical owner"
+    },
+    {
+      "id": "K01",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Inventory credentials without collecting their values",
+      "requirement": "Record each credential's owner, purpose, scope, storage location, consumers, expiry and revocation method.",
+      "verification": "Sample one credential per integration and follow its lifecycle without printing its value.",
+      "evidence": "Redacted credential register.",
+      "suggested_owner": "Identity owner"
+    },
+    {
+      "id": "K02",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Separate identities and environments",
+      "requirement": "Use distinct service identities for development, staging, production, workloads and tenants where their access must differ.",
+      "verification": "Try a staging identity against a production test resource; confirm denial and absence of shared administrator keys.",
+      "evidence": "Permission matrix and redacted denial event.",
+      "suggested_owner": "Identity owner"
+    },
+    {
+      "id": "K03",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Limit credential scope and lifetime",
+      "requirement": "Prefer workload identity and short-lived credentials; constrain resources and operations, and justify any long-lived key.",
+      "verification": "Attempt an out-of-scope operation with a test identity and verify expiry or revocation terminates access.",
+      "evidence": "Policy, token lifetime and test results.",
+      "suggested_owner": "Identity owner"
+    },
+    {
+      "id": "K04",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Keep secrets out of published and retained content",
+      "requirement": "Exclude credentials from prompts, repositories, image layers, build output, traces, shell history and assessment evidence.",
+      "verification": "Scan a synthetic test fixture through the actual build and logging paths; verify findings and redaction without using live keys.",
+      "evidence": "Scan results and sanitized logging samples.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "K05",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Keep reusable secrets outside agent execution",
+      "requirement": "Use a trusted tool service or credential broker when possible. An environment variable or mounted secret is readable by code with sufficient access inside that environment.",
+      "verification": "In a disposable test environment, inspect only known synthetic secret locations and verify that reusable provider credentials are absent from the agent's view.",
+      "evidence": "Architecture, allowed credential exceptions and synthetic isolation test.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "K06",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Constrain the credential broker itself",
+      "requirement": "Bind each broker operation to an authenticated caller, approved destination, account, method and resource. Do not forward credentials across arbitrary redirects.",
+      "verification": "Try a wrong destination, cross-account request, redirected request and revoked caller using test credentials; each unauthorized case must fail.",
+      "evidence": "Broker policy and negative-test results.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "K07",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Prove revocation works",
+      "requirement": "Provide a documented emergency path for revoking keys, sessions, refresh tokens, workload trust and derived access.",
+      "verification": "Revoke a disposable credential, then retry from an existing session and a new session; measure the effective cutoff.",
+      "evidence": "Timed revocation drill and list of dependent credentials.",
+      "suggested_owner": "Identity owner"
+    },
+    {
+      "id": "K08",
+      "priority": "P0",
+      "profiles": [
+        "self-hosted",
+        "agents"
+      ],
+      "title": "Block unnecessary metadata credentials",
+      "requirement": "Prevent untrusted workloads from reaching cloud metadata and container credential services unless specifically required; minimize any attached workload role.",
+      "verification": "Use an isolated test setup to verify network denial and inspect the effective identity policy; never collect production metadata tokens as evidence.",
+      "evidence": "Egress policy, workload role and test result.",
+      "suggested_owner": "Cloud owner"
+    },
+    {
+      "id": "S01",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Lock the full dependency graph",
+      "requirement": "Use reviewed lockfiles for direct and transitive packages, verified artifact hashes where supported, and container digests. A pinned malicious release remains malicious.",
+      "verification": "Build in a clean environment using the enforced lockfile mode and compare the resolved manifest with the reviewed one.",
+      "evidence": "Lockfile, artifact digest and build manifest.",
+      "suggested_owner": "Engineering owner"
+    },
+    {
+      "id": "S02",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Treat build and security tools as production dependencies",
+      "requirement": "Review and pin CI actions and scanners; use full commit identifiers for actions and verified immutable artifacts where available.",
+      "verification": "Inspect every workflow, including reusable workflows, for moving tags or unreviewed downloads; verify the referenced upstream repository.",
+      "evidence": "Workflow inventory and reviewed immutable references.",
+      "suggested_owner": "Build owner"
+    },
+    {
+      "id": "S03",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Separate untrusted builds from release credentials",
+      "requirement": "Run pull requests, dependency builds and third-party scanners without publishing or production credentials. Grant release access only in a protected stage.",
+      "verification": "Run a synthetic untrusted contribution and confirm it cannot obtain a release token, edit protected artifacts or trigger an authorized release.",
+      "evidence": "Job permission map and release-stage test.",
+      "suggested_owner": "Build owner"
+    },
+    {
+      "id": "S04",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Protect publishing identity",
+      "requirement": "Use short-lived release identity where supported, strong maintainer authentication and restricted repository, workflow, ref and environment trust.",
+      "verification": "Attempt a release from an unapproved ref using a test package or dry-run target; verify denial.",
+      "evidence": "Release policy and negative authorization test.",
+      "suggested_owner": "Release owner"
+    },
+    {
+      "id": "S05",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Verify artifact origin and integrity",
+      "requirement": "Use approved registries and publishers; validate signatures or provenance where provided and inspect changes between reviewed source and distributed artifacts.",
+      "verification": "Select one deployed artifact and link its digest to the reviewed release and build provenance; document gaps.",
+      "evidence": "Artifact origin record and verification output.",
+      "suggested_owner": "Build owner"
+    },
+    {
+      "id": "S06",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Review model and plugin installation behavior",
+      "requirement": "Treat model loaders, custom model code, install hooks, IDE extensions, skills and local MCP packages as executable software.",
+      "verification": "Inspect manifests and installation behavior in a disposable environment with synthetic data; identify network access and executable hooks.",
+      "evidence": "Component review and approved install procedure.",
+      "suggested_owner": "Engineering owner"
+    },
+    {
+      "id": "S07",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Update deliberately and promptly",
+      "requirement": "Assign patch ownership, monitor advisories, set risk-based deadlines and test upgrades with rollback. Dependency locking must not become permanent stagnation.",
+      "verification": "Take a relevant advisory through triage, affected-version discovery, staging checks and rollout or documented mitigation.",
+      "evidence": "Patch register, deployment inventory and rollback record.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "S08",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Rebuild compromised environments",
+      "requirement": "For suspected malicious dependencies, quarantine affected runners, caches, images and environments; preserve evidence, revoke exposed access and rebuild from trusted inputs.",
+      "verification": "Tabletop a poisoned dependency: identify all builds and downstream artifacts, then demonstrate clean rebuild and credential revocation paths.",
+      "evidence": "Artifact lineage and recovery exercise.",
+      "suggested_owner": "Incident lead"
+    },
+    {
+      "id": "N01",
+      "priority": "P0",
+      "profiles": [
+        "self-hosted",
+        "agents"
+      ],
+      "title": "Restrict inbound reachability",
+      "requirement": "Keep model, tool, database and management endpoints on approved interfaces and networks. Review port publishing, tunnels, load balancers and IPv6 as well as IPv4.",
+      "verification": "From authorized external and internal test vantage points, verify that only intended paths are reachable, including direct backend addresses.",
+      "evidence": "Endpoint inventory and reachability results.",
+      "suggested_owner": "Network owner"
+    },
+    {
+      "id": "N02",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Authenticate every protected entry point",
+      "requirement": "Enforce authentication and authorization on inference, administration, uploads, model management, tools and debugging endpoints. Test direct paths around the gateway.",
+      "verification": "Send no-credential, invalid-credential and low-privilege requests to test endpoints; protected operations must fail without performing work.",
+      "evidence": "Route-to-policy map and negative-test results.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "N03",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Separate administration from ordinary use",
+      "requirement": "Give configuration, model import, backend installation, tool registration and credential management their own restricted administrative permissions.",
+      "verification": "Use a regular user identity to attempt a harmless configuration change in staging; verify denial independently of the UI.",
+      "evidence": "Role matrix and denied admin test.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "N04",
+      "priority": "P0",
+      "profiles": [
+        "self-hosted",
+        "agents"
+      ],
+      "title": "Control outbound connections",
+      "requirement": "Allow only destinations and operations required for the workflow; include DNS, direct IP access, proxies, redirects and alternate protocols in the design.",
+      "verification": "Use synthetic traffic to approved and disallowed test destinations from the actual workload identity and network namespace.",
+      "evidence": "Egress rules and allow/deny observations.",
+      "suggested_owner": "Network owner"
+    },
+    {
+      "id": "N05",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Defend URL-fetching paths",
+      "requirement": "Validate resolved destinations and redirects for fetch tools, imports, previews, webhooks and authorization discovery; prevent unintended access to private services.",
+      "verification": "Use controlled fixtures for private, loopback, link-local, redirect and DNS-change cases; verify blocking without querying real sensitive endpoints.",
+      "evidence": "SSRF test record and destination policy.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "N06",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Protect transport and browser access",
+      "requirement": "Use validated encrypted transport across relevant boundaries; set narrow browser origins and host checks, and CSRF protection for cookie-authenticated changes.",
+      "verification": "Test an invalid certificate, unexpected origin or host, and a forged state-changing request; confirm rejection. CORS is not authentication.",
+      "evidence": "TLS configuration and browser negative tests.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "N07",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Limit resource consumption",
+      "requirement": "Enforce per-identity and per-tenant request, token, concurrency, upload, execution-time and spend limits; alert before exhaustion.",
+      "verification": "Apply a small agreed load in staging; verify throttling, cancellation and cost controls without affecting production.",
+      "evidence": "Limit configuration and bounded load-test results.",
+      "suggested_owner": "Service owner"
+    },
+    {
+      "id": "A01",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Authorize actions outside the model",
+      "requirement": "Enforce tool, operation and resource permissions in trusted code using the real caller's authority. Model text and tool descriptions must not grant access.",
+      "verification": "Request a harmless out-of-scope action and verify the tool service rejects it even when the model proposes it.",
+      "evidence": "Policy decision and denied tool call.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "A02",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Require precise approval for high-impact actions",
+      "requirement": "For payments, deletion, permission changes, publishing or external messages, show the exact target and material payload or diff before approval; bind approval to that action and expiry.",
+      "verification": "Change the target or payload after a test approval, replay it, or let it expire; the executor must reject the altered or stale request.",
+      "evidence": "Approval record and integrity tests.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "A03",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Treat retrieved instructions as untrusted data",
+      "requirement": "Emails, pages, images, documents, repository files, skills and tool responses cannot override authorization. Use content screening as an additional layer.",
+      "verification": "Place a benign instruction to cross a test boundary in an external document; verify no unauthorized action or data access occurs.",
+      "evidence": "Injection regression case and tool audit trail.",
+      "suggested_owner": "Security lead"
+    },
+    {
+      "id": "A04",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Review integrations and permission changes",
+      "requirement": "Approve each tool server, publisher, endpoint, local command, declared capability and update path; re-review changes in behavior or requested scope.",
+      "verification": "Compare deployed integrations with the approved inventory and simulate a changed tool description or newly requested permission.",
+      "evidence": "Integration manifest and change review.",
+      "suggested_owner": "Integration owner"
+    },
+    {
+      "id": "A05",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Keep tool sessions bound to identities",
+      "requirement": "For remote integrations, validate token audience, issuer, expiry and scopes; bind session handles to the user and client. Apply explicit consent where acting for users.",
+      "verification": "Try another user's session handle, a token for a different audience and a revoked grant in staging; all must fail.",
+      "evidence": "Auth configuration and cross-user tests.",
+      "suggested_owner": "Identity owner"
+    },
+    {
+      "id": "A06",
+      "priority": "P1",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Validate tool arguments and results",
+      "requirement": "Use schemas plus business rules for paths, amounts, recipients and resource identifiers; use safe APIs instead of concatenating model text into shell or SQL.",
+      "verification": "Submit malformed inputs and validly shaped but unauthorized values; verify rejection before any side effect.",
+      "evidence": "Validation tests and safe execution interface.",
+      "suggested_owner": "Engineering owner"
+    },
+    {
+      "id": "A07",
+      "priority": "P1",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Constrain autonomy and handoffs",
+      "requirement": "Set step, retry, time and cost budgets; preserve the initiating user's permissions across agent handoffs and require a working cancel path.",
+      "verification": "Trigger a bounded loop and a handoff to a more privileged test agent; verify termination and no privilege expansion.",
+      "evidence": "Run limits, cancellation event and delegation tests.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "I01",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Contain the entire execution path",
+      "requirement": "Evaluate the agent harness, internal helpers, shell, Git, file tools, plugin subprocesses and browser workers as part of the execution boundary.",
+      "verification": "Run benign boundary tests through multiple tool and background-helper paths, not only the shell; inspect where child processes execute.",
+      "evidence": "Process-boundary diagram and test matrix.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "I02",
+      "priority": "P0",
+      "profiles": [
+        "agents",
+        "self-hosted"
+      ],
+      "title": "Share only necessary host resources",
+      "requirement": "Avoid mounting the host root, home directory, credentials, browser profile, SSH agent or container daemon socket into untrusted workloads. Scope required mounts and prefer read-only access.",
+      "verification": "Inspect effective mounts, inherited environment and reachable sockets; verify a synthetic host-only file remains inaccessible.",
+      "evidence": "Sanitized mount/socket inventory and canary test.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "I03",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Keep enforcement outside untrusted execution",
+      "requirement": "Keep authorization state, broker secrets and control-plane interfaces outside memory and storage readable or writable by the agent; authenticate every privileged request.",
+      "verification": "Verify that synthetic enforcement secrets and policy files are absent from the guest and that forged control requests are rejected.",
+      "evidence": "Control-plane design and access tests.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "I04",
+      "priority": "P1",
+      "profiles": [
+        "self-hosted",
+        "agents"
+      ],
+      "title": "Reduce operating-system privileges",
+      "requirement": "Run with the least required user and capabilities; restrict unnecessary syscalls, namespaces, devices and kernel modules. Test compatibility before tightening.",
+      "verification": "Compare effective privileges with the workload's requirements and exercise denied operations in a disposable environment.",
+      "evidence": "Runtime profile and compatibility test.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "I05",
+      "priority": "P0",
+      "profiles": [
+        "agents"
+      ],
+      "title": "Test file boundaries beyond path strings",
+      "requirement": "Constrain file and patch operations using resolved, authorized resources; account for symlinks, nested directories, renames and changes between validation and use.",
+      "verification": "Use benign fixtures for traversal, symlink redirection and renamed parents; confirm reads and writes stay within the intended workspace.",
+      "evidence": "Filesystem boundary tests and affected-version record.",
+      "suggested_owner": "Engineering owner"
+    },
+    {
+      "id": "I06",
+      "priority": "P1",
+      "profiles": [
+        "self-hosted",
+        "agents"
+      ],
+      "title": "Patch every isolation layer",
+      "requirement": "Track the host OS, guest OS, runtime, hypervisor, filesystem-sharing layer, agent and extensions; an updated application can still use an old guest image.",
+      "verification": "Compare running versions and image digests against approved baselines and applicable vendor advisories.",
+      "evidence": "Runtime version inventory and patch evidence.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "I07",
+      "priority": "P0",
+      "profiles": [
+        "agents",
+        "self-hosted"
+      ],
+      "title": "Separate sessions and clean up reuse",
+      "requirement": "Isolate users and tenants across disks, memory, temporary files, browser state and snapshots. Define cleanup for recycled environments and failed jobs.",
+      "verification": "Run two disposable identities in sequence with synthetic markers and verify the second cannot retrieve the first's data; review infrastructure erasure guarantees.",
+      "evidence": "Session isolation tests and storage lifecycle policy.",
+      "suggested_owner": "Platform owner"
+    },
+    {
+      "id": "D01",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Minimize the data sent to each component",
+      "requirement": "Send only fields needed for the task; redact or tokenize sensitive values before external processing where the workflow allows it.",
+      "verification": "Trace a synthetic request through model, tool, telemetry and retry paths and compare every field with the approved data flow.",
+      "evidence": "Redacted trace and minimization rules.",
+      "suggested_owner": "Data owner"
+    },
+    {
+      "id": "D02",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Check actual provider data settings",
+      "requirement": "Document retention, training use, support access, subprocessors, processing locations and deletion behavior for the exact service, account tier and features used.",
+      "verification": "Inspect account settings and applicable service terms; test deletion where supported and record exceptions such as abuse-monitoring retention.",
+      "evidence": "Dated settings and vendor review.",
+      "suggested_owner": "Data owner"
+    },
+    {
+      "id": "D03",
+      "priority": "P0",
+      "profiles": [
+        "rag"
+      ],
+      "title": "Enforce retrieval permissions before generation",
+      "requirement": "Apply current user and tenant permissions to documents, chunks, metadata and retrieval queries; never rely on the model to hide unauthorized context.",
+      "verification": "Give two synthetic users different document rights; test direct retrieval and generated answers for cross-user access.",
+      "evidence": "ACL mapping and retrieval negative tests.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "D04",
+      "priority": "P0",
+      "profiles": [
+        "rag",
+        "agents"
+      ],
+      "title": "Isolate memory, caches and sessions",
+      "requirement": "Scope conversation history, retrieval caches, embeddings and saved memory to their intended identity and purpose; validate what may become persistent memory.",
+      "verification": "Repeat similar requests across test tenants and inject an untrusted memory instruction; verify no data or authority crosses boundaries.",
+      "evidence": "Cache-key design and memory/session tests.",
+      "suggested_owner": "Application owner"
+    },
+    {
+      "id": "D05",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Control retention and deletion end to end",
+      "requirement": "Define lifetimes for uploads, prompts, outputs, traces, embeddings, temporary files, snapshots and backups; document how deletions and permission removals propagate.",
+      "verification": "Delete a synthetic document and revoke access; verify active copies disappear and backup handling follows the documented schedule.",
+      "evidence": "Retention matrix and deletion/revocation test.",
+      "suggested_owner": "Data owner"
+    },
+    {
+      "id": "D06",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Validate outputs before downstream use",
+      "requirement": "Treat model output as untrusted at rendering, export and execution boundaries; sanitize active content, enforce destination permissions and review sensitive disclosures.",
+      "verification": "Use synthetic active markup, formula-like export cells and sensitive markers; confirm safe rendering/export and blocked unauthorized delivery.",
+      "evidence": "Output handling tests and release checks.",
+      "suggested_owner": "Engineering owner"
+    },
+    {
+      "id": "D07",
+      "priority": "P1",
+      "profiles": [
+        "rag",
+        "all"
+      ],
+      "title": "Protect ingestion and model assets",
+      "requirement": "Restrict who can change datasets, retrieval indexes, model files and configuration; record origin, version and integrity and quarantine untrusted uploads.",
+      "verification": "Try an unauthorized index change and process a benign malformed upload in staging; verify denial or isolation and traceability.",
+      "evidence": "Ingestion policy, dataset lineage and version record.",
+      "suggested_owner": "Data owner"
+    },
+    {
+      "id": "O01",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Log attributable security events",
+      "requirement": "Record user and workload identities, tool operations, targets, policy decisions, approvals, versions and timestamps with correlation IDs; redact content and secrets.",
+      "verification": "Trace one permitted and one denied test request across components without relying on the model's own narrative.",
+      "evidence": "Sanitized event chain and log access policy.",
+      "suggested_owner": "Operations owner"
+    },
+    {
+      "id": "O02",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Alert on meaningful changes and misuse",
+      "requirement": "Monitor new exposed endpoints, unusual credential use, privilege changes, disabled controls, unexpected egress, repeated denials and spend spikes.",
+      "verification": "Trigger selected low-impact synthetic events and verify alerts reach an accountable responder.",
+      "evidence": "Alert rules, routing and drill results.",
+      "suggested_owner": "Operations owner"
+    },
+    {
+      "id": "O03",
+      "priority": "P0",
+      "profiles": [
+        "agents",
+        "all"
+      ],
+      "title": "Provide independent containment controls",
+      "requirement": "Maintain a trusted way to stop tool execution, revoke identities, restrict network access and quarantine environments even if the agent is unresponsive.",
+      "verification": "Stop a benign long-running staging task from outside the agent; verify both current and newly queued actions cease.",
+      "evidence": "Timed containment test and operator procedure.",
+      "suggested_owner": "Incident lead"
+    },
+    {
+      "id": "O04",
+      "priority": "P0",
+      "profiles": [
+        "all"
+      ],
+      "title": "Prepare the credential-exposure response",
+      "requirement": "Plan containment, evidence preservation, clean-device revocation, session invalidation, persistence review, clean rebuild and downstream impact analysis.",
+      "verification": "Exercise the incident playbook with a fake exposed key and a compromised-dependency scenario; record decisions and gaps.",
+      "evidence": "Incident exercise and revised runbook.",
+      "suggested_owner": "Incident lead"
+    },
+    {
+      "id": "O05",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Prove recovery and rollback",
+      "requirement": "Back up necessary configuration and data with restricted access; test restoration into a clean environment and prevent revoked secrets from returning.",
+      "verification": "Restore a synthetic workload from backup, verify permissions and integrity, and ensure old credentials remain unusable.",
+      "evidence": "Restore report and recovery objectives.",
+      "suggested_owner": "Operations owner"
+    },
+    {
+      "id": "O06",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Repeat security acceptance tests",
+      "requirement": "Rerun applicable tests after material changes and on a documented schedule; keep versioned evidence and track unresolved findings.",
+      "verification": "Select the most recent release and verify tests match its actual versions, integrations and permissions.",
+      "evidence": "Acceptance-test report and remediation backlog.",
+      "suggested_owner": "Security lead"
+    },
+    {
+      "id": "V01",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Verify assurance scope and issuer",
+      "requirement": "Review actual audit reports, certification scope, dates, exclusions and independent issuers; verify that the deployed service and relevant controls are covered.",
+      "verification": "Match a supplier claim to the underlying current report and identify customer responsibilities and unresolved findings.",
+      "evidence": "Vendor assessment and report review.",
+      "suggested_owner": "Procurement owner"
+    },
+    {
+      "id": "V02",
+      "priority": "P0",
+      "profiles": [
+        "cloud",
+        "self-hosted"
+      ],
+      "title": "Establish tenant-storage isolation",
+      "requirement": "For shared infrastructure, obtain evidence of allocation, deletion, reuse and snapshot isolation; assess per-tenant key separation where supported. Disk encryption alone does not prove tenant isolation.",
+      "verification": "Review the provider's or platform team's isolation design and assurance evidence; run only authorized synthetic tenant tests within your own scope.",
+      "evidence": "Storage isolation review and accepted residual risk.",
+      "suggested_owner": "Cloud owner"
+    },
+    {
+      "id": "V03",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Define security change and incident communication",
+      "requirement": "Identify who receives vendor advisories, how affected versions are located and when incident notifications reach your team.",
+      "verification": "Route a sample advisory to the owner and find affected deployments from the inventory.",
+      "evidence": "Notification contacts and response workflow.",
+      "suggested_owner": "Service owner"
+    },
+    {
+      "id": "V04",
+      "priority": "P1",
+      "profiles": [
+        "all"
+      ],
+      "title": "Plan exit and offboarding",
+      "requirement": "Document connector removal, identity revocation, data export/deletion, retention exceptions and operational fallback when a provider or plugin is removed.",
+      "verification": "Offboard a disposable integration and confirm both access termination and data-lifecycle follow-through.",
+      "evidence": "Exit checklist and test record.",
+      "suggested_owner": "Service owner"
+    }
+  ]
+}
